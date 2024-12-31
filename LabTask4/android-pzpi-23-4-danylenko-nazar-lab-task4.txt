@@ -1,0 +1,175 @@
+﻿МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ
+ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
+
+
+
+
+КАФЕДРА ПРОГРАМНОЇ ІНЖЕНЕРІЇ
+
+
+
+
+
+
+
+
+Звіт
+з лабораторної роботи № 4 з дисципліни
+Програмування під Android
+   
+
+
+
+
+
+
+
+
+
+
+
+
+Виконав:                                                                                     Перевірив:
+ст. гр. ПЗПІ-23-4                                                        ст. викладач кафедри ПІ
+Даниленко Назар Сергійович                                           Сокорчук Ігор Петрович
+
+
+
+
+
+
+Харків 2024
+Хід роботи
+Опис функціоналу застосунку
+Додавання нотаток:
+Реалізовано активність AddEditNoteActivity, де користувач може створити нову нотатку, заповнивши назву, опис, вибравши рівень важливості (High, Medium, Low).
+Збереження виконується через натискання кнопки "Save". Дані повертаються до головної активності через Intent.
+Редагування нотаток:
+Реалізовано механізм передачі об'єкта Note між активностями через Serializable.
+При редагуванні поля автоматично заповнюються поточними даними нотатки.
+Видалення нотаток:
+На кожній нотатці є кнопка "Delete", яка видаляє відповідну нотатку з RecyclerView та основного списку.
+Пошук та фільтрація:
+Додано функцію пошуку за текстом у назві чи описі нотаток.
+Додано фільтри для відображення нотаток за важливістю: High, Medium, Low.
+Зміна мови інтерфейсу:
+
+Можна перемикатися між англійською та українською мовами через меню.
+Код програми
+Основні компоненти проєкту:
+MainActivity.java:
+Реалізує відображення списку нотаток через RecyclerView.
+Забезпечує взаємодію з адаптером NoteAdapter.
+Додає функції пошуку, фільтрації та зміни мови.
+Фрагмент коду:
+@Override
+public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    if (resultCode == RESULT_OK && data != null) {
+        Note newNote = (Note) data.getSerializableExtra("note");
+        if (newNote != null) {
+            if (requestCode == REQUEST_CODE_ADD_NOTE) {
+                originalNoteList.add(newNote);
+                noteList.add(newNote);
+                adapter.notifyItemInserted(noteList.size() - 1);
+            } else if (requestCode == REQUEST_CODE_EDIT_NOTE) {
+                int position = findNotePosition(newNote);
+                if (position >= 0) {
+                    originalNoteList.set(position, newNote);
+                    noteList.set(position, newNote);
+                    adapter.notifyItemChanged(position);
+                }
+            }
+        }
+    }
+}
+
+
+AddEditNoteActivity.java:
+Відповідає за додавання та редагування нотаток.
+Повертає оновлені дані в MainActivity.
+Фрагмент коду:
+saveButton.setOnClickListener(v -> {
+    String updatedDateTime = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault()).format(new Date());
+    Note updatedNote = new Note(
+        titleInput.getText().toString(),
+        descriptionInput.getText().toString(),
+        importanceSpinner.getSelectedItem().toString(),
+        updatedDateTime, ""
+    );
+    Intent resultIntent = new Intent();
+    resultIntent.putExtra("note", updatedNote);
+    setResult(RESULT_OK, resultIntent);
+    finish();
+});
+
+
+NoteAdapter.java:
+Відповідає за відображення нотаток у RecyclerView.
+Реалізує кнопки редагування та видалення нотаток.
+Фрагмент коду:
+@Override
+public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
+    Note note = notes.get(position);
+    holder.titleTextView.setText(note.getTitle());
+    holder.dateTimeTextView.setText(note.getDateTime());
+    switch (note.getImportance()) {
+        case "High":
+            holder.importanceImageView.setImageResource(R.drawable.ic_high_importance);
+            break;
+        case "Medium":
+            holder.importanceImageView.setImageResource(R.drawable.ic_medium_importance);
+            break;
+        case "Low":
+            holder.importanceImageView.setImageResource(R.drawable.ic_low_importance);
+            break;
+    }
+    holder.deleteButton.setOnClickListener(v -> listener.onDeleteClick(note));
+}
+
+
+Макети:
+activity_main.xml — містить RecyclerView.
+note_item.xml — описує вигляд елемента списку (назва, дата, кнопка видалення).
+activity_add_edit_note.xml — містить поля для введення даних.
+Фрагмент розмітки:
+<ImageView
+    android:id="@+id/deleteButton"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:src="@android:drawable/ic_delete" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Висновки
+У результаті виконаної роботи створено повнофункціональний застосунок для ведення нотаток. Основна функціональність включає:
+Створення, редагування, видалення нотаток.
+Пошук і фільтрацію нотаток за важливістю.
+Зміну мови інтерфейсу.
+Ця робота дозволила закріпити навички роботи з:
+RecyclerView і кастомними адаптерами.
+Активностями та передачею даних між ними.
+Базовими елементами UI.
+Локалізацією Android-застосунків.
+Цей досвід допоміг поглибити знання в розробці Android-додатків та підготувати міцну основу для створення більш складних проєктів.
+Послання на відео пояснення : https://youtu.be/9_OfLlBOOj0
