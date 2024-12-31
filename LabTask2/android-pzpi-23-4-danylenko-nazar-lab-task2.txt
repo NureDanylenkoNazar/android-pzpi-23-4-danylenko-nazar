@@ -1,0 +1,315 @@
+﻿МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ
+ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
+
+
+
+
+КАФЕДРА ПРОГРАМНОЇ ІНЖЕНЕРІЇ
+
+
+
+
+
+
+
+
+Звіт
+з лабораторної роботи № 2 з дисципліни
+Програмування під Android
+   
+
+
+
+
+
+
+
+
+
+
+Виконав:                                                                                                                Перевірив:
+ст. гр. ПЗПІ-23-5                                                                   ст. викладач кафедри ПІ
+Даниленко Назар Сергійович                                        Сокорчук Ігор Петрович
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Харків 2024
+
+
+Завдання
+
+Розробити редактор, у якому з допомогою трьох регуляторів SeekBar встановлюється колір панелі. Регулятори визначають RGB-компоненти кольору панелі. Зовнішній вигляд екрану редактора повинен залежати від орієнтації пристроя. У портретній орієнтації пристроя, регулятори повинні знаходитися знизу від панелі, займати 1/3 висоти і розташовуватися на всю ширину екрану. У ландшафтній – залишатися внизу.
+
+1. Хід роботи
+
+В рамках лабораторної роботи було створено редактор кольору, який дозволяє змінювати колір панелі за допомогою трьох регуляторів (R, G, B). Інтерфейс програми автоматично адаптується до орієнтації екрана: у портретній орієнтації регулятори розташовані внизу і займають 1/3 висоти екрану, а в ландшафтній – також залишаються внизу.
+   1. Розробка інтерфейсу Для створення графічного інтерфейсу було використано ConstraintLayout і LinearLayout. Основні компоненти:
+   * Панель кольору — змінює свій фон залежно від значень RGB.
+   * Три SeekBar для зміни компонентів кольору (Red, Green, Blue).
+   * TextView для відображення ярликів (R, G, B).
+   2. Адаптивний дизайн Інтерфейс автоматично адаптується до портретної та ландшафтної орієнтацій за допомогою макетів:
+   * Портретний макет зберігається у res/layout/activity_main.xml.
+   * Ландшафтний макет у res/layout-land/activity_main.xml.
+   3. Реалізація функціональності Основна логіка програми реалізована в класі MainActivity. Основні кроки:
+   * Ініціалізація елементів:
+colorPanel = findViewById(R.id.colorPanel);
+seekBarRed = findViewById(R.id.seekBarRed);
+seekBarGreen = findViewById(R.id.seekBarGreen);
+seekBarBlue = findViewById(R.id.seekBarBlue);
+
+
+   * Обробка змін значень регуляторів:
+SeekBar.OnSeekBarChangeListener listener = new SeekBar.OnSeekBarChangeListener() {
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        updateColor();
+    }
+
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {}
+
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {}
+};
+
+
+seekBarRed.setOnSeekBarChangeListener(listener);
+seekBarGreen.setOnSeekBarChangeListener(listener);
+seekBarBlue.setOnSeekBarChangeListener(listener);
+
+
+   * Оновлення кольору панелі:
+private void updateColor() {
+    int red = seekBarRed.getProgress();
+    int green = seekBarGreen.getProgress();
+    int blue = seekBarBlue.getProgress();
+
+
+    int color = Color.rgb(red, green, blue);
+    colorPanel.setBackgroundColor(color);
+}
+
+
+   4. Висновки
+У результаті виконання роботи було створено редактор кольору з трьома регуляторами RGB. Програма забезпечує:
+   * Інтуїтивно зрозумілий інтерфейс для зміни кольору.
+   * Адаптивний дизайн для портретної та ландшафтної орієнтацій.
+   * Реалізація динамічної зміни кольору панелі в реальному часі.
+Реалізація функціональності розділена на логічні частини, що спрощує читабельність і подальший розвиток коду. Ця програма може бути розширена додаванням додаткових елементів керування або збереженням вибраного кольору.
+   5. Додатки
+Додаток А: Макет (портретна орієнтація)
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <!-- Панель кольору -->
+    <View
+        android:id="@+id/colorPanel"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#FF0000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/seekBarContainer" />
+
+
+    <!-- Контейнер для регуляторів -->
+    <LinearLayout
+        android:id="@+id/seekBarContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:padding="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_percent="0.33">
+
+
+        <!-- SeekBar Red -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="R:" />
+            <SeekBar
+                android:id="@+id/seekBarRed"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="255" />
+        </LinearLayout>
+
+
+        <!-- SeekBar Green -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="G:" />
+            <SeekBar
+                android:id="@+id/seekBarGreen"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="255" />
+        </LinearLayout>
+
+
+        <!-- SeekBar Blue -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="B:" />
+            <SeekBar
+                android:id="@+id/seekBarBlue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="255" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+Додаток B: Код MainActivity
+package danylenko.nazar.nure;
+
+
+import android.graphics.Color;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.SeekBar;
+
+
+import androidx.appcompat.app.AppCompatActivity;
+
+
+public class MainActivity extends AppCompatActivity {
+
+
+    private View colorPanel;
+    private SeekBar seekBarRed, seekBarGreen, seekBarBlue;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+        // Ініціалізація елементів
+        colorPanel = findViewById(R.id.colorPanel);
+        seekBarRed = findViewById(R.id.seekBarRed);
+        seekBarGreen = findViewById(R.id.seekBarGreen);
+        seekBarBlue = findViewById(R.id.seekBarBlue);
+
+
+        // Обробка змін регуляторів
+        SeekBar.OnSeekBarChangeListener listener = new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateColor();
+            }
+
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        };
+
+
+        seekBarRed.setOnSeekBarChangeListener(listener);
+        seekBarGreen.setOnSeekBarChangeListener(listener);
+        seekBarBlue.setOnSeekBarChangeListener(listener);
+    }
+
+
+    private void updateColor() {
+        int red = seekBarRed.getProgress();
+        int green = seekBarGreen.getProgress();
+        int blue = seekBarBlue.getProgress();
+
+
+        int color = Color.rgb(red, green, blue);
+        colorPanel.setBackgroundColor(color);
+    }
+}
+
+
+
+
+
+
+https://youtu.be/gbiHqInbNw0
