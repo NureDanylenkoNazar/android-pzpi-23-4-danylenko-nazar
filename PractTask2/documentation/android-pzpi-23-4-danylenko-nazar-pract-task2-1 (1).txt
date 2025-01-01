@@ -1,0 +1,164 @@
+﻿МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ
+ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
+
+
+
+
+КАФЕДРА ПРОГРАМНОЇ ІНЖЕНЕРІЇ
+
+
+
+
+
+
+
+
+Звіт
+з практичної роботи № 2 з дисципліни
+Програмування під Android
+   
+
+
+
+
+
+
+
+
+
+
+
+
+Виконав:                                                                                     Перевірив:
+ст. гр. ПЗПІ-23-4                                                        ст. викладач кафедри ПІ
+Даниленко Назар Сергійович                                     Сокорчук Ігор Петрович
+
+
+
+
+
+
+Харків 2024
+
+
+1. Мета роботи:
+
+   * Ознайомитися з основами створення інтерфейсів Android з використанням GridLayout.
+   * Реалізувати сітку кнопок цифр, математичних операцій та функцій калькулятора.
+   * Забезпечити обробку натискань кнопок та виведення результатів в TextView.
+   2. Основні етапи виконання роботи:
+
+      * Створення проєкту за шаблоном Empty Activity.
+      * Додавання розмітки в activity_main.xml з використанням GridLayout.
+      * Підключення TextView та кнопок до Java-коду.
+      * Обробка натискань кнопок.
+
+
+ХІД РОБОТИ
+      1. Створення проєкту:
+
+         * У Android Studio створено новий проєкт за шаблоном Empty Activity.
+         * Виконано налаштування проєкту (модулі SDK, Gradle).
+         2. Створення розмітки:
+
+            * Розташовано TextView у верхній частині для відображення чисел та результату.
+            * Додано GridLayout для кнопок, всі кнопки розташовано у сітці.
+Код activity_main.xml:
+
+ 1  <?xml version="1.0" encoding="utf-8"?>
+2  <GridLayout
+3      xmlns:android="http://schemas.android.com/apk/res/android"
+4      android:layout_width="match_parent"
+5      android:layout_height="match_parent"
+6      android:columnCount="4"
+7      android:padding="16dp">
+
+
+8      <!-- TextView -->
+9      <TextView
+            3. 10 android:id="@+id/result_text" 11 android:layout_width="match_parent" 12 android:layout_height="wrap_content" 13 android:text="0" 14 android:textSize="36sp" 15 android:gravity="end" 16 android:layout_columnSpan="4" />
+17 18 19 20 21 22 ...
+
+
+3. **Програмна логіка:**
+Додано обробку кнопок для оновлення TextView. 
+
+
+**Код MainActivity.java:**
+```java
+1  package com.example.calculator;
+2  import android.os.Bundle;
+3  import android.widget.TextView;
+4  import androidx.appcompat.app.AppCompatActivity;
+5  public class MainActivity extends AppCompatActivity {
+6      @Override
+7      protected void onCreate(Bundle savedInstanceState) {
+8          super.onCreate(savedInstanceState);
+9          setContentView(R.layout.activity_main);
+10          TextView resultTextView = findViewById(R.id.result_text);
+11          findViewById(R.id.btn_1).setOnClickListener(v -> {
+12              String currentText = resultTextView.getText().toString();
+13              resultTextView.setText(currentText + "1");
+14          });
+15          findViewById(R.id.btn_clear).setOnClickListener(v -> {
+16              resultTextView.setText("0");
+17          });
+18      }
+19  }
+
+
+Розділ «ВИСНОВКИ»
+В ході практичної роботи було досягнуто наступних результатів:
+            1. Ознайомлено з використанням GridLayout для розташування компонентів.
+            2. Створено сітку кнопок цифр, математичних операцій та функцій.
+            3. Забезпечено оновлення TextView за натисканням кнопок.
+            4. Реалізовано базовий функціонал калькулятора.
+Розділ «ВИКОРИСТАНІ ДЖЕРЕЛА»
+            1. Офіційна документація Android Developers:
+ https://developer.android.com
+            2. Лекційні матеріали викладача.
+            3. Відеозвіт до роботи: https://youtu.be/4F22ItG93-Y
+Розділ «ДОДАТКИ»
+Додаток 1. Код activity_main.xml
+ 1  <?xml version="1.0" encoding="utf-8"?>
+  2  <GridLayout
+  3      xmlns:android="http://schemas.android.com/apk/res/android"
+  4      android:layout_width="match_parent"
+  5      android:layout_height="match_parent"
+  6      android:columnCount="4"
+  7      android:padding="16dp">
+
+
+  8      <TextView
+  9          android:id="@+id/result_text"
+  10          android:layout_width="match_parent"
+  11          android:layout_height="wrap_content"
+  12          android:text="0"
+  13          android:textSize="36sp"
+  14          android:gravity="end"
+  15          android:layout_columnSpan="4" />
+  16      <Button android:id="@+id/btn_7" android:text="7" />
+  17      <Button android:id="@+id/btn_8" android:text="8" />
+  18      ...
+
+
+Додаток 2. Код MainActivity.java
+ 1  package com.example.calculator;
+  2  import android.os.Bundle;
+  3  import android.widget.TextView;
+  4  import androidx.appcompat.app.AppCompatActivity;
+  5  public class MainActivity extends AppCompatActivity {
+  6      @Override
+  7      protected void onCreate(Bundle savedInstanceState) {
+  8          super.onCreate(savedInstanceState);
+  9          setContentView(R.layout.activity_main);
+  10          TextView resultTextView = findViewById(R.id.result_text);
+  11          findViewById(R.id.btn_1).setOnClickListener(v -> {
+  12              String currentText = resultTextView.getText().toString();
+  13              resultTextView.setText(currentText + "1");
+  14          });
+  15          findViewById(R.id.btn_clear).setOnClickListener(v -> {
+  16              resultTextView.setText("0");
+  17          });
+  18      }
+  19  }

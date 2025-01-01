@@ -1,0 +1,201 @@
+﻿МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ
+ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
+
+
+
+
+КАФЕДРА ПРОГРАМНОЇ ІНЖЕНЕРІЇ
+
+
+
+
+
+
+
+
+Звіт
+з практичної роботи № 2 з дисципліни
+Програмування під Android
+   
+
+
+
+
+
+
+
+
+
+
+
+
+Виконав:                                                                                     Перевірив:
+ст. гр. ПЗПІ-23-4                                                        ст. викладач кафедри ПІ
+Даниленко Назар Сергійович                                     Сокорчук Ігор Петрович
+
+
+
+
+
+
+Харків 2024
+
+
+ЗАВДАННЯ
+1. Створити проект у Android Studio з шаблоном Empty Activity.
+2. Ознайомитися з файлом activity_main.xml та налаштувати розмітку екрана.
+3. Реалізувати макет з використанням LinearLayout: розташувати кілька кнопок вертикально.
+4. Реалізувати макет з використанням ConstraintLayout: створити складний макет з текстом, зображенням та кнопкою.
+5. Додати обробку подій для кнопки: змінювати текст у TextView.
+ХІД РОБОТИ
+1. Підготовка середовища:
+
+   * У Android Studio створено новий проект із шаблоном Empty Activity.
+   * Відкрито файл res/layout/activity_main.xml для редагування розмітки.
+   2. Реалізація макета з LinearLayout:
+
+      * Додано LinearLayout з вертикальною орієнтацією.
+      * У макеті розташовано три кнопки: Button 1, Button 2, Button 3.
+      3. Реалізація макета з ConstraintLayout:
+
+         * Додано ConstraintLayout для створення складного макета.
+         * Розташовано TextView, ImageView та кнопку Change Text. Використано constraints для позиціонування елементів.
+         4. Додавання обробки подій:
+
+            * У файлі activity_main.xml додано атрибут android:onClick="changeText" для кнопки.
+            * У файлі MainActivity.java створено метод changeText, який змінює текст у TextView на "Text Changed!" при натисканні кнопки.
+
+
+            5. Перевірка та тестування:
+
+               * Запущено застосунок на емуляторі. Всі елементи відображаються коректно.
+               * Натискання кнопки Change Text змінює текст у TextView.
+
+
+ВИСНОВКИ
+Під час виконання практичної роботи я навчився створювати розмітку екрана в Android-застосунках за допомогою XML-файлів. Було реалізовано два типи макетів: LinearLayout для простого розташування елементів та ConstraintLayout для складнішого макета. Також я ознайомився з налаштуванням атрибутів елементів і додаванням обробки подій для кнопок. Отримані навички заклали основу для подальшої роботи з інтерфейсом користувача в Android.
+
+
+Пояснення https://youtu.be/m5kRnb235do
+
+
+ВИКОРИСТАНІ ДЖЕРЕЛА
+               1. Офіційна документація Android: https://developer.android.com
+               2. Android Studio User Guide: https://developer.android.com/studio/intro
+
+
+ДОДАТКИ
+               1. Код файлу activity_main.xml:
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+
+    <!-- TextView -->
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hello, Android!"
+        android:textSize="20sp"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <!-- ImageView -->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_launcher_foreground"
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp" />
+
+
+    <!-- Button 1 -->
+    <Button
+        android:id="@+id/buttonChangeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change Text"
+        app:layout_constraintTop_toBottomOf="@id/imageView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
+        android:onClick="changeText" />
+
+
+    <!-- LinearLayout with Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/buttonChangeText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button 1" />
+
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button 2" />
+
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Button 3" />
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+               2. Код MainActivity.java:
+package com.example.layoutpractice;
+
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+
+
+public class MainActivity extends AppCompatActivity {
+
+
+    private TextView textView;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+
+        textView = findViewById(R.id.textView);
+    }
+
+
+    public void changeText(View view) {
+        textView.setText("Text Changed!");
+    }
+}

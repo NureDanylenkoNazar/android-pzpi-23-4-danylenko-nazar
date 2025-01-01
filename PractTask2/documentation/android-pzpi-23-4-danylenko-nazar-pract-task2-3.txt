@@ -1,0 +1,216 @@
+﻿МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ
+ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
+
+
+
+
+КАФЕДРА ПРОГРАМНОЇ ІНЖЕНЕРІЇ
+
+
+
+
+
+
+
+
+Звіт
+з практичної роботи № 2 з дисципліни
+Програмування під Android
+   
+
+
+
+
+
+
+
+
+
+
+
+
+Виконав:                                                                                     Перевірив:
+ст. гр. ПЗПІ-23-4                                                        ст. викладач кафедри ПІ
+Даниленко Назар Сергійович                                     Сокорчук Ігор Петрович
+
+
+
+
+
+
+Харків 2024
+
+
+1. Мета роботи:
+
+   * Ознайомитися із механізмами збереження стану користувача під час зміни орієнтації екрана в Android-додатках.
+   * Реалізувати автоматичне призупинення і відновлення таймера при зміні станів активності (onPause/onResume).
+   2. Основні етапи виконання роботи:
+
+      * Створення проекту за шаблоном Empty Activity.
+      * Додавання кнопки для підрахунку кліків та таймера у текстовому полі.
+      * Реалізація механізму збереження стану кліків під час зміни орієнтації екрана.
+      * Реалізація логіки таймера, який зупиняється під час виклику onPause і відновлюється після onResume.
+Розділ «ХІД РОБОТИ»
+      1. Створення проєкту:
+
+         * У Android Studio створено новий проєкт із шаблоном Empty Activity.
+         * Налаштовано середовище проєкту (модулі SDK, Gradle).
+         2. Додавання інтерфейсу:
+
+            * Додано кнопки і текстові поля для реалізації лічильника кліків та таймера у файлі activity_main.xml.
+Код activity_main.xml:
+
+ 1  <?xml version="1.0" encoding="utf-8"?>
+ 2  <LinearLayout
+ 3      xmlns:android="http://schemas.android.com/apk/res/android"
+ 4      android:layout_width="match_parent"
+ 5      android:layout_height="match_parent"
+ 6      android:orientation="vertical"
+ 7      android:padding="16dp">
+ 8
+ 9      <!-- Лічильник кліків -->
+10      <TextView
+11          android:id="@+id/counter_text"
+12          android:layout_width="wrap_content"
+13          android:layout_height="wrap_content"
+14          android:text="0"
+15          android:textSize="32sp"
+16          android:layout_gravity="center_horizontal"
+17          android:padding="16dp" />
+18
+19      <!-- Таймер -->
+20      <TextView
+21          android:id="@+id/timer_text"
+22          android:layout_width="wrap_content"
+23          android:layout_height="wrap_content"
+24          android:text="00:00"
+25          android:textSize="32sp"
+26          android:layout_gravity="center_horizontal"
+27          android:padding="16dp" />
+28
+29      <!-- Кнопка -->
+30      <Button
+31          android:id="@+id/increment_button"
+32          android:layout_width="wrap_content"
+33          android:layout_height="wrap_content"
+34          android:text="Increment Counter"
+35          android:layout_gravity="center_horizontal"
+36          android:padding="16dp" />
+37  </LinearLayout>
+            3.             4. Програмна логіка:
+
+               * Додано Java-клас MainActivity, у якому реалізовано збереження стану та логіку таймера.
+Код MainActivity.java:
+
+ 1  package com.example.countertimerapp;
+ 2
+ 3  import android.os.Bundle;
+ 4  import android.os.Handler;
+ 5  import android.os.SystemClock;
+ 6  import android.widget.Button;
+ 7  import android.widget.TextView;
+ 8
+ 9  import androidx.annotation.NonNull;
+10  import androidx.appcompat.app.AppCompatActivity;
+11
+12  public class MainActivity extends AppCompatActivity {
+13
+14      private TextView counterTextView;
+15      private TextView timerTextView;
+16      private Button incrementButton;
+17
+18      private int counter = 0;
+19
+20      private long startTime = 0L;
+21      private long pausedTime = 0L;
+22      private Handler timerHandler = new Handler();
+23      private boolean isTimerRunning = false;
+24
+25      @Override
+26      protected void onCreate(Bundle savedInstanceState) {
+27          super.onCreate(savedInstanceState);
+28          setContentView(R.layout.activity_main);
+29
+30          counterTextView = findViewById(R.id.counter_text);
+31          timerTextView = findViewById(R.id.timer_text);
+32          incrementButton = findViewById(R.id.increment_button);
+33
+34          incrementButton.setOnClickListener(view -> {
+35              counter++;
+36              counterTextView.setText(String.valueOf(counter));
+37          });
+38
+39          if (savedInstanceState != null) {
+40              counter = savedInstanceState.getInt("counter", 0);
+41              pausedTime = savedInstanceState.getLong("pausedTime", 0L);
+42              counterTextView.setText(String.valueOf(counter));
+43          }
+44
+45          startTimer();
+46      }
+47
+48      @Override
+49      protected void onSaveInstanceState(@NonNull Bundle outState) {
+50          super.onSaveInstanceState(outState);
+51          outState.putInt("counter", counter);
+52          outState.putLong("pausedTime", pausedTime);
+53      }
+54
+55      @Override
+56      protected void onPause() {
+57          super.onPause();
+58          stopTimer();
+59      }
+60
+61      @Override
+62      protected void onResume() {
+63          super.onResume();
+64          startTimer();
+65      }
+66
+67      private void startTimer() {
+68          if (!isTimerRunning) {
+69              startTime = SystemClock.uptimeMillis() - pausedTime;
+70              timerHandler.post(timerRunnable);
+71              isTimerRunning = true;
+72          }
+73      }
+74
+75      private void stopTimer() {
+76          if (isTimerRunning) {
+77              pausedTime = SystemClock.uptimeMillis() - startTime;
+78              timerHandler.removeCallbacks(timerRunnable);
+79              isTimerRunning = false;
+80          }
+81      }
+82
+83      private Runnable timerRunnable = new Runnable() {
+84          @Override
+85          public void run() {
+86              long elapsedMillis = SystemClock.uptimeMillis() - startTime;
+87              int seconds = (int) (elapsedMillis / 1000);
+88              int minutes = seconds / 60;
+89              seconds = seconds % 60;
+90
+91              String time = String.format("%02d:%02d", minutes, seconds);
+92              timerTextView.setText(time);
+93
+94              timerHandler.postDelayed(this, 1000);
+95          }
+96      };
+97  }
+
+
+Розділ «ВИСНОВКИ»
+У результаті виконання практичної роботи було досягнуто наступного:
+               1. Реалізовано механізм збереження стану користувача (лічильника кліків) під час зміни орієнтації екрана.
+               2. Реалізовано таймер, який автоматично зупиняється при виклику onPause і поновлюється після onResume.
+               3. Отримано практичні навички роботи з Bundle, Handler та Runnable у середовищі Android Studio.
+
+
+Розділ «ВИКОРИСТАНІ ДЖЕРЕЛА»
+               1. Офіційна документація Android Developers:
+ https://developer.android.com
+               2. Лекційні матеріали викладача.
+               3. Відеозвіт до роботи: https://youtu.be/nBY-GS5IkT0
